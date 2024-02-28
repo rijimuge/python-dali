@@ -110,6 +110,7 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
             last_resp = None
             send_twice = command.sendtwice
             self.LOG.info("sending %r", command)
+            print("sending %r", command)
             cmd = self.construct(command)
             self.conn.write((cmd).encode("ascii"))
             REPS = 5
@@ -117,6 +118,7 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
             already_resent = False
             resent_times = 0
             self.LOG.info("sending %r", cmd)
+            print("sending %r", cmd)
             while i < REPS:
                 i += 1
                 # Read a response line. We always allow blank lines here, because
@@ -124,6 +126,7 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
                 # been seen to my knowledge, but defensive programming y'know.
                 resp = self.read_line()
                 self.LOG.info("got response: %r", resp)
+                print("got response: %r", resp)
                 resend = False
                 # Got a normal response
                 if cmd[:3] not in ["hB1", "hB3", "hB5"]:
