@@ -85,7 +85,7 @@ class DaliHatSerialDriver(DALIDriver):
             prefix = "t"
 
         data = "".join(["{:02X}".format(byte) for byte in f.pack])
-        command_str = (f"{prefix}{data}").encode("ascii")
+        command_str = (f"{prefix}{data}\n").encode("ascii")
         return command_str
 
     def extract(self, data):
