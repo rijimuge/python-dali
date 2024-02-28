@@ -8,7 +8,7 @@ import time
 
 
 # The dictionary to define DALI packet sizes corresponds to command prefixes.
-DALI_PACKET_SIZE = {"J": 8, "H": 16, "L": 24, "M": 25}
+DALI_PACKET_SIZE = {"j": 8, "h": 16, "l": 24, "m": 25}
 DALI_PACKET_PREFIX = {v: k for k, v in DALI_PACKET_SIZE.items()}
 
 
