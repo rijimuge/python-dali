@@ -52,6 +52,7 @@ class DaliHatSerialDriver(DALIDriver):
                 # Sanity checks: make sure we're not getting a crazy long line,
                 # or waiting forever for the end of a partial packet
                 if byte:
+                    self.LOG.info("read byte: %s", byte)
                     ct = 0
                     line += byte
                     if len(line) > 30:
@@ -108,18 +109,21 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
             lines = []
             last_resp = None
             send_twice = command.sendtwice
+            self.LOG.info("sending %r", command)
             cmd = self.construct(command)
             self.conn.write((cmd).encode("ascii"))
             REPS = 5
             i = 0
             already_resent = False
             resent_times = 0
+            self.LOG.info("sending %r", cmd)
             while i < REPS:
                 i += 1
                 # Read a response line. We always allow blank lines here, because
                 # otherwise we might deadlock if the hat is misbehaving. This hasn't
                 # been seen to my knowledge, but defensive programming y'know.
                 resp = self.read_line()
+                self.LOG.info("got response: %r", resp)
                 resend = False
                 # Got a normal response
                 if cmd[:3] not in ["hB1", "hB3", "hB5"]:
@@ -137,6 +141,7 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
                             return self.extract(resp)
                     # Check for send/receive collision, and resend if so
                     elif resp and resp[0] in {"X", "Z", ""}:
+
                         # Some APIs want to see conflicts, so break in that case.
                         # We only return receive conflicts (as in, we got more than
                         # one response), but always retry on send conflicts (as in,
