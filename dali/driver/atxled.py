@@ -25,8 +25,9 @@ class DaliHatSerialDriver(DALIDriver):
                 parity=serial.PARITY_NONE,
                 stopbits=serial.STOPBITS_ONE,
                 bytesize=serial.EIGHTBITS,
-                timeout=0.2,
+                timeout=1,
             )
+            print("Serial connection opened")
         except Exception as e:
             logging.exception("Could not open serial connection: %s", e)
             # Handle non-connectivity appropriately in your environment
@@ -84,7 +85,7 @@ class DaliHatSerialDriver(DALIDriver):
             prefix = "t"
 
         data = "".join(["{:02X}".format(byte) for byte in f.pack])
-        command_str = f"{prefix}{data}"
+        command_str = (f"{prefix}{data}").encode("ascii")
         return command_str
 
     def extract(self, data):
@@ -112,13 +113,13 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
             self.LOG.info("sending %r", command)
             print("sending %r", command)
             cmd = self.construct(command)
-            self.conn.write((cmd).encode("ascii"))
+            self.LOG.info("sending %r", cmd)
+            print("sending %r", cmd)
+            self.conn.write((cmd))
             REPS = 5
             i = 0
             already_resent = False
             resent_times = 0
-            self.LOG.info("sending %r", cmd)
-            print("sending %r", cmd)
             while i < REPS:
                 i += 1
                 # Read a response line. We always allow blank lines here, because
