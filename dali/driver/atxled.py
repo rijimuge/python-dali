@@ -96,7 +96,7 @@ class DaliHatSerialDriver(DALIDriver):
                 return Command(BackwardFrame(data))
             except ValueError as e:
                 self.LOG.error(f"Failed to parse response: {e}")
-        return data
+        return None
 
     def close(self):
         if self.conn:
