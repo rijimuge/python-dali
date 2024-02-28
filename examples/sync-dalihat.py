@@ -13,17 +13,23 @@ class DaliTest:
         # Assuming DALI addresses are from 0 to 63 for short addresses
         present_devices = []
         for address in range(0, 64):
-            response = self.driver.send(QueryControlGearPresent(GearShort(address)))
-            if response.value is True:
-                present_devices.append(address)
-                print(f"Device found at address: {address}")
+            try:
+                response = self.driver.send(QueryControlGearPresent(GearShort(address)))
+                if response.value is True:
+                    present_devices.append(address)
+                    print(f"Device found at address: {address}")
+            except Exception as e:
+                print(f"Error while querying address {address}: {e}")
         
         return present_devices
 
     def set_device_level(self, address, level, fade_time=0):
         # Set device to a specific brightness level
-        self.driver.send(DAPC(GearShort(address), level, fade_time))
-        print(f"Set device at address {address} to level {level} with fade time {fade_time}")
+        try:
+            self.driver.send(DAPC(GearShort(address), level, fade_time))
+            print(f"Set device at address {address} to level {level} with fade time {fade_time}")
+        except Exception as e:
+            print(f"Error while setting level for address {address}: {e}")
 
 if __name__ == "__main__":
     serial_port = "/dev/ttyS0"  # Your specific serial port here
