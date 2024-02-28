@@ -1,5 +1,5 @@
 from dali.command import Command
-from dali.driver.base import SyncDALIDriver, DaliDriver
+from dali.driver.base import SyncDALIDriver, DALIDriver
 from dali.frame import ForwardFrame, BackwardFrame
 import logging
 import serial
@@ -12,7 +12,7 @@ DALI_PACKET_SIZE = {"J": 8, "H": 16, "L": 24, "M": 25}
 DALI_PACKET_PREFIX = {v: k for k, v in DALI_PACKET_SIZE.items()}
 
 
-class DaliHatSerialDriver(DaliDriver):
+class DaliHatSerialDriver(DALIDriver):
     def __init__(self, port="/dev/ttyS0"):
         self.port = port
         self.lock = threading.RLock()
@@ -101,7 +101,7 @@ class DaliHatSerialDriver(DaliDriver):
             self.conn.close()
 
 
-class SyncDaliHatDriver(DaliHatDriver, SyncDALIDriver):
+class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
     def send(self, command):
         with self.lock:
             # Keep a buffer of unmatched input to queue up
