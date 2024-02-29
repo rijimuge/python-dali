@@ -42,24 +42,24 @@ class DaliHatTest:
         # Query additional device information
         try:
             # Query group memberships
-            groups_0_7 = self.driver.send(QueryGroupsZeroToSeven(GearShort(address)))
+            groups_0_7 = self.driver.send(QueryGroupsZeroToSeven(GearShort(address))).value
             print(f"Device {address} groups 0-7: {groups_0_7}")
 
-            groups_8_15 = self.driver.send(QueryGroupsEightToFifteen(GearShort(address)))
+            groups_8_15 = self.driver.send(QueryGroupsEightToFifteen(GearShort(address))).value
             print(f"Device {address} groups 8-15: {groups_8_15}")
 
             # Query brightness levels
-            min_level = self.driver.send(QueryMinLevel(GearShort(address)))
+            min_level = self.driver.send(QueryMinLevel(GearShort(address))).value
             print(f"Device {address} minimum level: {min_level}")
 
-            max_level = self.driver.send(QueryMaxLevel(GearShort(address)))
+            max_level = self.driver.send(QueryMaxLevel(GearShort(address))).value
             print(f"Device {address} maximum level: {max_level}")
 
             physical_minimum = self.driver.send(QueryPhysicalMinimum(GearShort(address)))
-            print(f"Device {address} physical minimum: {physical_minimum}")
+            print(f"Device {address} physical minimum: {physical_minimum}").value
 
             actual_level = self.driver.send(QueryActualLevel(GearShort(address)))
-            print(f"Device {address} actual level: {actual_level}")
+            print(f"Device {address} actual level: {actual_level}").value
 
         except Exception as e:
             print(f"Error while querying device {address}: {e}")
