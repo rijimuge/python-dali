@@ -9,6 +9,7 @@ import time
 DALI_PACKET_SIZE = {"j": 8, "h": 16, "l": 24, "m": 25}
 DALI_PACKET_PREFIX = {v: k for k, v in DALI_PACKET_SIZE.items()}
 
+
 class DaliHatSerialDriver(DALIDriver):
     """Driver for communicating with DALI devices over a serial connection."""
 
@@ -17,7 +18,7 @@ class DaliHatSerialDriver(DALIDriver):
         self.port = port
         self.lock = threading.RLock()
         self.buffer = []
-        self.LOG = logging.getLogger('AtxLedDaliDriver')
+        self.LOG = logging.getLogger("AtxLedDaliDriver")
         try:
             self.conn = serial.Serial(
                 port=self.port,
@@ -31,17 +32,6 @@ class DaliHatSerialDriver(DALIDriver):
         except Exception as e:
             self.LOG.exception("Could not open serial connection: %s", e)
             self.conn = None
-
-    def reset_input_buffer(self):
-        """Clear the input buffer."""
-        if self.conn:
-            self.conn.reset_input_buffer()
-            self.buffer = []
-
-    def enqueue_buffer(self, line):
-        """Add a line to the buffer."""
-        with self.lock:
-            self.buffer.append(line)
 
     def _read_line(self):
         """Read a line from the serial connection."""
@@ -123,8 +113,6 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
             while i < REPS:
                 i += 1
                 resp = self.read_line()
-                self.LOG.info("got response: %r", resp)
-                print("got response: %r", resp)
                 resend = False
                 if cmd[:3] not in ["hB1", "hB3", "hB5"]:
                     if resp and resp[0] in {"N", "J"}:
