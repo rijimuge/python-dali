@@ -165,8 +165,11 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
                     REPS += 1 + send_twice
                     resent_times += 1
                 if command.is_query:
+                    print(f"resp (is_query): {resp}")
                     return command.response(resp)
+                print(f"resp (not query): {resp}")
                 return resp
+
 
 
 if __name__ == "__main__":
