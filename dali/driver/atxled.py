@@ -164,9 +164,8 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
                     self.conn.write(cmd.encode("ascii"))
                     REPS += 1 + send_twice
                     resent_times += 1
-                frame = self.extract(resp)
                 if command.is_query:
-                    return command.response(frame)
+                    return command.response(resp)
                 return resp
 
 
