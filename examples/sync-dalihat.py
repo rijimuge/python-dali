@@ -5,7 +5,7 @@ from dali.driver.base import SyncDALIDriver
 from dali.driver.atxled import SyncDaliHatDriver
 from dali.address import GearShort
 from dali.frame import BackwardFrame
-from dali.command import Response
+from dali.command import YesNoResponse
 
 class DaliTest:
     def __init__(self, driver: SyncDALIDriver):
@@ -16,7 +16,7 @@ class DaliTest:
         present_devices = []
         for address in range(0, 64):
             try:
-                response: Response = Response(self.driver.send(QueryControlGearPresent(GearShort(address))))
+                response = YesNoResponse(self.driver.send(QueryControlGearPresent(GearShort(address))))
                 if response.value is True:
                     present_devices.append(address)
                     print(f"Device found at address: {address}")
