@@ -1,6 +1,7 @@
 from dali.command import Command
 from dali.driver.base import SyncDALIDriver, DALIDriver
 from dali.frame import ForwardFrame, BackwardFrame
+
 import logging
 import serial
 import threading
@@ -93,7 +94,7 @@ class DaliHatSerialDriver(DALIDriver):
         if data.startswith("J"):
             try:
                 data = int(data[1:], 16)
-                return Command(BackwardFrame(data))
+                return Command(ForwardFrame(data))
             except ValueError as e:
                 self.LOG.error(f"Failed to parse response: {e}")
         return None
@@ -104,7 +105,7 @@ class DaliHatSerialDriver(DALIDriver):
 
 
 class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
-    def send(self, command):
+    def send(self, command: Command):
         with self.lock:
             # Keep a buffer of unmatched input to queue up
             lines = []
@@ -136,7 +137,8 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
                         if send_twice:
                             if last_resp:
                                 if last_resp == resp:
-                                    return self.extract(resp)
+                                    resp = self.extract(resp)
+                                    break
                                 resend = True
                                 last_resp = None
                             else:
@@ -155,6 +157,7 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
                         while collision_bytes != "":
                             collision_bytes = self.read_line()
                         if resp[0] == "X":
+                            resp = None
                             break
                         self.LOG.info(
                             "got conflict (%s) sending %r, sending again", resp, cmd
@@ -171,7 +174,7 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
                         already_resent = True
                 else:
                     if resp and resp[0] == "N":
-                        return self.extract(resp)
+                        resp = self.extract(resp)
                         break
                     # For set compare: B1, B3, B5, only acceptable response is N, otherwise resend
                     elif resp and resp[0] in {"X", "Z", ""}:
@@ -192,6 +195,8 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
                         self.conn.write((cmd).encode("ascii"))
                         REPS += 1 + send_twice
                         resent_times += 1
+                if command.is_query:
+                    return self.extract(resp)
 
 
 # Usage example
