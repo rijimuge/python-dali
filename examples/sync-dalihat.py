@@ -88,8 +88,8 @@ if __name__ == "__main__":
 
     # Query and display additional device information
     for device in found_devices:
-        dali_test.query_device_info(device)
         dali_test.set_device_level(device, 128)  # Example: Set level to 50% brightness
+        dali_test.query_device_info(device)
         dali_test.turn_off_device(device)  # Turn off the device
 
     # Don't forget to close the driver connection
