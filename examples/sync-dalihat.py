@@ -20,6 +20,9 @@ class DaliTest:
                 if response.value is True:
                     present_devices.append(address)
                     print(f"Device found at address: {address}")
+                else:
+                    print(f"Response from address {address}: {response.value}")
+
             except Exception as e:
                 print(f"Error while querying address {address}: {e}")
         
