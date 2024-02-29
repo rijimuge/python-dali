@@ -7,12 +7,11 @@ from dali.address import GearShort
 from dali.frame import BackwardFrame
 from dali.command import YesNoResponse
 
-class DaliTest:
+class DaliHatTest:
     def __init__(self, driver: SyncDALIDriver):
         self.driver = driver
 
     def scan_devices(self):
-        # Assuming DALI addresses are from 0 to 63 for short addresses
         present_devices = []
         for address in range(0, 64):
             try:
@@ -43,7 +42,7 @@ if __name__ == "__main__":
     dali_driver = SyncDaliHatDriver(port=serial_port)
 
     # Creating an instance of DaliTest with our driver
-    dali_test = DaliTest(dali_driver)
+    dali_test = DaliHatTest(dali_driver)
     found_devices = []
 
     # Scanning for devices
