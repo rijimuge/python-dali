@@ -44,14 +44,15 @@ if __name__ == "__main__":
 
     # Creating an instance of DaliTest with our driver
     dali_test = DaliTest(dali_driver)
+    found_devices = []
 
     # Scanning for devices
     found_devices = dali_test.scan_devices()
     print(f"Scanned and found {len(found_devices)} devices.")
 
     # Example: Setting level of the first found device (if any) to 50% brightness for 0 fade time
-    if found_devices:
-        dali_test.set_device_level(found_devices[0], 128, 0)
+    for device in found_devices:
+        dali_test.set_device_level(device, 128)
 
     # Don't forget to close the driver connection
     dali_driver.close()
