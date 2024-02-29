@@ -18,7 +18,7 @@ class DaliHatTest:
         present_devices = []
         for address in range(0, 64):
             try:
-                response = YesNoResponse(self.driver.send(QueryControlGearPresent(GearShort(address))))
+                response = self.driver.send(QueryControlGearPresent(GearShort(address)))
                 if response.value is True:
                     present_devices.append(address)
                     print(f"Device found at address: {address}")
