@@ -94,7 +94,7 @@ class DaliHatSerialDriver(DALIDriver):
         if data.startswith("J"):
             try:
                 data = int(data[1:], 16)
-                return Command(BackwardFrame(data))
+                return BackwardFrame(data)
             except ValueError as e:
                 self.LOG.error(f"Failed to parse response: {e}")
         return None
