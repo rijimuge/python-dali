@@ -119,13 +119,15 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
                         if send_twice:
                             if last_resp:
                                 if last_resp == resp:
-                                    return self.extract(resp)
+                                    resp = self.extract(resp)
+                                    break
                                 resend = True
                                 last_resp = None
                             else:
                                 last_resp = resp
                         else:
-                            return self.extract(resp)
+                            resp = self.extract(resp)
+                            break
                     elif resp and resp[0] in {"X", "Z", ""}:
                         time.sleep(0.1)
                         collision_bytes = None
@@ -148,7 +150,8 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
                         already_resent = True
                 else:
                     if resp and resp[0] == "N":
-                        return self.extract(resp)
+                        resp = self.extract(resp)
+                        break
                     elif resp and resp[0] in {"X", "Z", ""}:
                         time.sleep(0.1)
                         collision_bytes = None
@@ -161,8 +164,10 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
                     self.conn.write(cmd.encode("ascii"))
                     REPS += 1 + send_twice
                     resent_times += 1
+                frame = self.extract(resp)
                 if command.is_query:
-                    return self.extract(resp)
+                    return command.response(frame)
+                return resp
 
 
 if __name__ == "__main__":
