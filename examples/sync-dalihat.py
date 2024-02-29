@@ -31,7 +31,7 @@ class DaliTest:
     def set_device_level(self, address, level, fade_time=0):
         # Set device to a specific brightness level
         try:
-            self.driver.send(DAPC(GearShort(address), level, fade_time))
+            self.driver.send(DAPC(GearShort(address), level))
             print(f"Set device at address {address} to level {level} with fade time {fade_time}")
         except Exception as e:
             print(f"Error while setting level for address {address}: {e}")
