@@ -110,6 +110,7 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
             i = 0
             already_resent = False
             resent_times = 0
+            resp = None
             while i < REPS:
                 i += 1
                 resp = self.read_line()
@@ -164,11 +165,11 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
                     self.conn.write(cmd.encode("ascii"))
                     REPS += 1 + send_twice
                     resent_times += 1
-                if command.is_query:
-                    print(f"resp (is_query): {resp}")
-                    return command.response(resp)
-                print(f"resp (not query): {resp}")
-                return resp
+            if command.is_query:
+                print(f"resp (is_query): {resp}")
+                return command.response(resp)
+            print(f"resp (not query): {resp}")
+            return resp
 
 
 
