@@ -179,7 +179,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     serial_port = "/dev/ttyS0"
     dali_driver = SyncDaliHatDriver()
-    command = Command(ForwardFrame(16, 0xFFFF))  # Broadcast maximum level
+    command = Command(ForwardFrame(16, 0xFFFE))  # Broadcast maximum level
     response = dali_driver.send(command)
     print("DALI response:", response)
     dali_driver.close()
