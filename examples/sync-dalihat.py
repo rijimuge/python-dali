@@ -29,7 +29,6 @@ class DaliHatTest:
         return present_devices
 
     def set_device_level(self, address, level, fade_time=0):
-        # Set device to a specific brightness level
         try:
             self.driver.send(DAPC(GearShort(address), level))
             print(f"Set device at address {address} to level {level} with fade time {fade_time}")
@@ -37,10 +36,8 @@ class DaliHatTest:
             print(f"Error while setting level for address {address}: {e}")
 
     def query_device_info(self, address):
-        # Query additional device information
         current_command = None
         try:
-            # Query group memberships
             current_command = "QueryGroupsZeroToSeven"
             groups_0_7 = self.driver.send(QueryGroupsZeroToSeven(GearShort(address))).value
             print(f"Device {address} groups 0-7: {groups_0_7}")
@@ -49,7 +46,6 @@ class DaliHatTest:
             groups_8_15 = self.driver.send(QueryGroupsEightToFifteen(GearShort(address))).value
             print(f"Device {address} groups 8-15: {groups_8_15}")
 
-            # Query brightness levels
             current_command = "QueryMinLevel"
             min_level = self.driver.send(QueryMinLevel(GearShort(address))).value
             print(f"Device {address} minimum level: {min_level}")
@@ -70,7 +66,6 @@ class DaliHatTest:
             print(f"Error while querying device {address} with command '{current_command}': {e}")
 
     def turn_off_device(self, address):
-        # Turn off a specific device
         try:
             self.driver.send(Off(GearShort(address)))
             print(f"Turned off device at address {address}")
@@ -78,24 +73,19 @@ class DaliHatTest:
             print(f"Error while turning off device {address}: {e}")
 
 if __name__ == "__main__":
-    serial_port = "/dev/ttyS0"  # Your specific serial port here
+    serial_port = "/dev/ttyS0"
 
-    # Initialize your DALI driver; make sure it is compatible with SyncDALIDriver interface
     dali_driver = SyncDaliHatDriver(port=serial_port)
 
-    # Creating an instance of DaliTest with our driver
     dali_test = DaliHatTest(dali_driver)
     found_devices = []
 
-    # Scanning for devices
     found_devices = dali_test.scan_devices()
     print(f"Scanned and found {len(found_devices)} devices.")
 
-    # Query and display additional device information
     for device in found_devices:
         dali_test.query_device_info(device)
-        dali_test.set_device_level(device, 128)  # Example: Set level to 50% brightness
-        dali_test.turn_off_device(device)  # Turn off the device
+        dali_test.set_device_level(device, 128)
+        dali_test.turn_off_device(device)
 
-    # Don't forget to close the driver connection
     dali_driver.close()

@@ -2,6 +2,8 @@ from dali.command import Command
 from dali.driver.base import SyncDALIDriver, DALIDriver
 from dali.frame import ForwardFrame, BackwardFrame
 import logging
+import sys
+sys.path = [p for p in sys.path if not p.endswith('python-dali/dali/driver')]
 import serial
 import threading
 import time
@@ -176,7 +178,7 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     serial_port = "/dev/ttyS0"
-    dali_driver = SyncDaliHatDriver(serial_port)
+    dali_driver = SyncDaliHatDriver()
     command = Command(ForwardFrame(16, 0xFF00))  # Broadcast turn off
     response = dali_driver.send(command)
     print("DALI response:", response)
