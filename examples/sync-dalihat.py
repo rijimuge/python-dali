@@ -7,8 +7,6 @@ from dali.gear.general import (
 from dali.driver.base import SyncDALIDriver
 from dali.driver.atxled import SyncDaliHatDriver
 from dali.address import GearShort
-from dali.frame import BackwardFrame
-from dali.command import YesNoResponse
 
 class DaliHatTest:
     def __init__(self, driver: SyncDALIDriver):
@@ -40,29 +38,36 @@ class DaliHatTest:
 
     def query_device_info(self, address):
         # Query additional device information
+        current_command = None
         try:
             # Query group memberships
+            current_command = "QueryGroupsZeroToSeven"
             groups_0_7 = self.driver.send(QueryGroupsZeroToSeven(GearShort(address))).value
             print(f"Device {address} groups 0-7: {groups_0_7}")
 
+            current_command = "QueryGroupsEightToFifteen"
             groups_8_15 = self.driver.send(QueryGroupsEightToFifteen(GearShort(address))).value
             print(f"Device {address} groups 8-15: {groups_8_15}")
 
             # Query brightness levels
+            current_command = "QueryMinLevel"
             min_level = self.driver.send(QueryMinLevel(GearShort(address))).value
             print(f"Device {address} minimum level: {min_level}")
 
+            current_command = "QueryMaxLevel"
             max_level = self.driver.send(QueryMaxLevel(GearShort(address))).value
             print(f"Device {address} maximum level: {max_level}")
 
+            current_command = "QueryPhysicalMinimum"
             physical_minimum = self.driver.send(QueryPhysicalMinimum(GearShort(address)))
             print(f"Device {address} physical minimum: {physical_minimum}").value
 
+            current_command = "QueryActualLevel"
             actual_level = self.driver.send(QueryActualLevel(GearShort(address)))
             print(f"Device {address} actual level: {actual_level}")
 
         except Exception as e:
-            print(f"Error while querying device {address}: {e}")
+            print(f"Error while querying device {address} with command '{current_command}': {e}")
 
     def turn_off_device(self, address):
         # Turn off a specific device
@@ -88,8 +93,8 @@ if __name__ == "__main__":
 
     # Query and display additional device information
     for device in found_devices:
-        dali_test.set_device_level(device, 128)  # Example: Set level to 50% brightness
         dali_test.query_device_info(device)
+        dali_test.set_device_level(device, 128)  # Example: Set level to 50% brightness
         dali_test.turn_off_device(device)  # Turn off the device
 
     # Don't forget to close the driver connection
