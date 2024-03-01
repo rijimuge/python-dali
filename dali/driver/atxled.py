@@ -50,7 +50,6 @@ class DaliHatSerialDriver(DALIDriver):
             ct = 0
             while byte != "\n":
                 if byte:
-                    self.LOG.info("read byte: %s", byte)
                     ct = 0
                     line += byte
                     if len(line) > 30:
@@ -91,7 +90,7 @@ class DaliHatSerialDriver(DALIDriver):
                 data = int(data[1:], 16)
                 return BackwardFrame(data)
             except ValueError as e:
-                self.LOG.error(f"Failed to parse response: {e}")
+                self.LOG.error(f"Failed to parse response '{data}': {e}")
         return None
 
     def close(self):
