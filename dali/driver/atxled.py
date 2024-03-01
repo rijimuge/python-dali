@@ -3,8 +3,13 @@ from dali.driver.base import SyncDALIDriver, DALIDriver
 from dali.frame import ForwardFrame, BackwardFrame
 import logging
 import sys
-sys.path = [p for p in sys.path if not p.endswith('python-dali/dali/driver')]
+
+# avoid import name collision with 'serial' driver
+original_sys_path = list(sys.path)
+sys.path = [p for p in sys.path if not p.endswith("python-dali/dali/driver")]
 import serial
+sys.path = original_sys_path
+
 import threading
 import time
 
@@ -15,7 +20,7 @@ DALI_PACKET_PREFIX = {v: k for k, v in DALI_PACKET_SIZE.items()}
 class DaliHatSerialDriver(DALIDriver):
     """Driver for communicating with DALI devices over a serial connection."""
 
-    def __init__(self, port="/dev/ttyS0", LOG = None):
+    def __init__(self, port="/dev/ttyS0", LOG=None):
         """Initialize the serial connection to the DALI interface."""
         self.port = port
         self.lock = threading.RLock()
@@ -104,11 +109,7 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
             lines = []
             last_resp = None
             send_twice = command.sendtwice
-            self.LOG.info("sending %r", command)
-            self.LOG.info("sending %r", command)
             cmd = self.construct(command)
-            self.LOG.info("sending %r", cmd)
-            print("sending %r", cmd)
             self.conn.write(cmd)
             REPS = 5
             i = 0
@@ -170,18 +171,15 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
                     REPS += 1 + send_twice
                     resent_times += 1
             if command.is_query:
-                print(f"resp (is_query): {resp}")
                 return command.response(resp)
-            print(f"resp (not query): {resp}")
             return resp
-
 
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     serial_port = "/dev/ttyS0"
     dali_driver = SyncDaliHatDriver()
-    command = Command(ForwardFrame(16, 0xFF00))  # Broadcast turn off
+    command = Command(ForwardFrame(16, 0xFFFF))  # Broadcast maximum level
     response = dali_driver.send(command)
     print("DALI response:", response)
     dali_driver.close()
