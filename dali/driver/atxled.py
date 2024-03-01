@@ -15,12 +15,15 @@ DALI_PACKET_PREFIX = {v: k for k, v in DALI_PACKET_SIZE.items()}
 class DaliHatSerialDriver(DALIDriver):
     """Driver for communicating with DALI devices over a serial connection."""
 
-    def __init__(self, port="/dev/ttyS0"):
+    def __init__(self, port="/dev/ttyS0", LOG = None):
         """Initialize the serial connection to the DALI interface."""
         self.port = port
         self.lock = threading.RLock()
         self.buffer = []
-        self.LOG = logging.getLogger("AtxLedDaliDriver")
+        if not LOG:
+            self.LOG = logging.getLogger("AtxLedDaliDriver")
+            handler = logging.StreamHandler(sys.stdout)
+            self.LOG.addHandler(handler)
         try:
             self.conn = serial.Serial(
                 port=self.port,
@@ -30,7 +33,6 @@ class DaliHatSerialDriver(DALIDriver):
                 bytesize=serial.EIGHTBITS,
                 timeout=1,
             )
-            print("Serial connection opened")
         except Exception as e:
             self.LOG.exception("Could not open serial connection: %s", e)
             self.conn = None
@@ -103,7 +105,7 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
             last_resp = None
             send_twice = command.sendtwice
             self.LOG.info("sending %r", command)
-            print("sending %r", command)
+            self.LOG("sending %r", command)
             cmd = self.construct(command)
             self.LOG.info("sending %r", cmd)
             print("sending %r", cmd)
