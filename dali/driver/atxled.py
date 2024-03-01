@@ -179,8 +179,9 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
 if __name__ == "__main__":
     """Usage: python atxled.py address value
     """
-    from dali.gear.general import DAPC
+    from dali.gear.general import DAPC2
 
+    logging.basicConfig(level=logging.DEBUG)
     serial_port = "/dev/ttyS0"
     dali_driver = SyncDaliHatDriver()
     command = DAPC(int(sys.argv[1]), int(sys.argv[2]))
