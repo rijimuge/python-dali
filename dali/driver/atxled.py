@@ -111,6 +111,7 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
             send_twice = command.sendtwice
             cmd = self.construct(command)
             self.conn.write(cmd)
+            self.LOG.debug("command string sent: %r", cmd)
             REPS = 5
             i = 0
             already_resent = False
@@ -119,6 +120,7 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
             while i < REPS:
                 i += 1
                 resp = self.read_line()
+                self.LOG.debug("raw response received: %r", resp)
                 resend = False
                 if cmd[:3] not in ["hB1", "hB3", "hB5"]:
                     if resp and resp[0] in {"N", "J"}:
@@ -176,10 +178,14 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
 
 
 if __name__ == "__main__":
+    """Usage: python atxled.py address value
+    """
+    from dali.gear.general import DAPC
+
     logging.basicConfig(level=logging.DEBUG)
     serial_port = "/dev/ttyS0"
     dali_driver = SyncDaliHatDriver()
-    command = Command(ForwardFrame(16, 0xFFFE))  # Broadcast maximum level
+    command = DAPC(int(sys.argv[1]), int(sys.argv[2]))
     response = dali_driver.send(command)
     print("DALI response:", response)
     dali_driver.close()
