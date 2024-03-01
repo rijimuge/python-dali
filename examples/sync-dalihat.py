@@ -59,11 +59,11 @@ class DaliHatTest:
             print(f"Device {address} maximum level: {max_level}")
 
             current_command = "QueryPhysicalMinimum"
-            physical_minimum = self.driver.send(QueryPhysicalMinimum(GearShort(address)))
-            print(f"Device {address} physical minimum: {physical_minimum}").value
+            physical_minimum = self.driver.send(QueryPhysicalMinimum(GearShort(address))).value
+            print(f"Device {address} physical minimum: {physical_minimum}")
 
             current_command = "QueryActualLevel"
-            actual_level = self.driver.send(QueryActualLevel(GearShort(address)))
+            actual_level = self.driver.send(QueryActualLevel(GearShort(address))).value
             print(f"Device {address} actual level: {actual_level}")
 
         except Exception as e:
