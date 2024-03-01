@@ -57,6 +57,7 @@ class DaliHatSerialDriver(DALIDriver):
                 else:
                     ct += 1
                     if ct > 10:
+                        self.LOG.error("No bytes read, buffer: %r", self.buffer)
                         raise RuntimeError("GOT INCOMPLETE PACKET: %s" % repr(line))
                 byte = self.conn.read(1).decode("ascii")
             return line
