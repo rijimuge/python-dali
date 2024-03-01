@@ -36,7 +36,7 @@ class DaliHatSerialDriver(DALIDriver):
                 parity=serial.PARITY_NONE,
                 stopbits=serial.STOPBITS_ONE,
                 bytesize=serial.EIGHTBITS,
-                timeout=1,
+                timeout=.2,
             )
         except Exception as e:
             self.LOG.exception("Could not open serial connection: %s", e)
@@ -53,12 +53,11 @@ class DaliHatSerialDriver(DALIDriver):
                     ct = 0
                     line += byte
                     if len(line) > 30:
-                        raise RuntimeError("GOT CRAZY LINE: %s" % repr(line))
+                        raise RuntimeError("Got unexpected line: %s" % repr(line))
                 else:
                     ct += 1
                     if ct > 10:
-                        self.LOG.error("No bytes read, buffer: %r", self.buffer)
-                        raise RuntimeError("GOT INCOMPLETE PACKET: %s" % repr(line))
+                        raise RuntimeError("Got incomplete packet: %s" % repr(line))
                 byte = self.conn.read(1).decode("ascii")
             return line
 
