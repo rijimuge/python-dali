@@ -105,7 +105,7 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
             last_resp = None
             send_twice = command.sendtwice
             self.LOG.info("sending %r", command)
-            self.LOG("sending %r", command)
+            self.LOG.info("sending %r", command)
             cmd = self.construct(command)
             self.LOG.info("sending %r", cmd)
             print("sending %r", cmd)
