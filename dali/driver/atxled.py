@@ -110,8 +110,8 @@ class SyncDaliHatDriver(DaliHatSerialDriver, SyncDALIDriver):
             last_resp = None
             send_twice = command.sendtwice
             cmd = self.construct(command)
-            self.conn.write(cmd)
             self.LOG.debug("command string sent: %r", cmd)
+            self.conn.write(cmd)
             REPS = 5
             i = 0
             already_resent = False
@@ -182,7 +182,6 @@ if __name__ == "__main__":
     """
     from dali.gear.general import DAPC
 
-    logging.basicConfig(level=logging.DEBUG)
     serial_port = "/dev/ttyS0"
     dali_driver = SyncDaliHatDriver()
     command = DAPC(int(sys.argv[1]), int(sys.argv[2]))
