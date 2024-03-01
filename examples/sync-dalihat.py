@@ -96,9 +96,8 @@ class DaliHatTest:
 
 
 if __name__ == "__main__":
-    serial_port = "/dev/ttyS0"
-
-    dali_driver = SyncDaliHatDriver(port=serial_port)
+    logging.basicConfig(level=logging.INFO)
+    dali_driver = SyncDaliHatDriver()
 
     dali_test = DaliHatTest(dali_driver)
     found_devices = []
